@@ -53,10 +53,10 @@ $$
 Now, substituting the rearranged integrand back into the full integral we have the following:
 
 $$
-L(\theta) = \int \prod_{i=1}^{n} \Big[ \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta) \Big]d\lambda_{n}.
+L(\theta) = \int \dots \int \prod_{i=1}^{n} \Big[ \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta) \Big] d\lambda_i \dots d\lambda_{n}.
 $$
 
-Since the limits of integration for $\lambda_i$ do not depend on $\lambda_j$, and the integrand is completely separable into a product of functions of distinct variables, the multiple integral of the product is then equivalent to the product of the individual one-dimensional integrals.
+Since the limits of integration are independent and the integrand is separable as a product of functions of distinct variables, the joint integral simplifies to the product of \$n\$ individual, one-dimensional integrals.
 
 Hence, we can pull the product operator outside of the integral and express the likelihood of $\theta$ as
 
