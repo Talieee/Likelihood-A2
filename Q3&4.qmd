@@ -1,0 +1,37 @@
+---
+title: "Question 3&4"
+author: "Natalie C"
+format: pdf
+editor: visual
+---
+
+```{r}
+#loading of libraries
+library(readr)
+```
+
+## Loading for dataset
+
+```{r}
+coffeetime <- read_csv("coffeetime.csv")
+```
+
+### Question 3
+
+Since repeated visits can take place , let $t_{ij}$ represent the waiting time for coffee j at cafe i. There fore the model specifications will be:
+
+$$T_{ij} \overset{\mathrm{iid}}{\sim}\text{Exponential}(\lambda_i)$$ where: $$ i = 1,2,3,....n \quad \text{&} \quad j = 1,2,3,....,v_i$$ $$\lambda_i \overset{\mathrm{iid}}{\sim} \text{Gamma}(\alpha, \beta)$$ \* used LMM to be able to typeset it correctly (the iid bit at the \~ bit).
+
+### Question 4
+
+In Question 1 we have:
+
+If we are told that the visits to the coffee shops are independent, then we can rewrite the likelihood to visit cafe i in the following way: $$ L_i(\alpha, \beta | t_i) = \int\prod_j^{v_i} \pi(t_{ij}  | \lambda_i)  \pi(\lambda_i | \alpha, \beta) d\lambda_i$$
+
+Where $t_{ij}$ is the waiting time for coffee j at time i.
+
+Our rate parameter remains unchanged as the waiting time for each cafe remains the same regardless how many times you go for another cup of coffee. Since $\lambda_i$ is an unobserved random variable, we integrate it out using its distribution $\pi(\lambda_i | \alpha, \beta)$. The parameters $\alpha$ and $\beta$ are the fixed parameters we're estimating.
+
+Since the waiting times for the cafes are also independent we can take the product of the marginal likelihood for each cafe to find the general likelihood.
+
+$$L(\alpha, \beta \mid t_1, t_2, \dots, t_n) = \prod_{i = 1}^n \left[ \int \prod_{j=1}^{v_i} \pi(t_{ij} \mid \lambda_i) \pi(\lambda_i \mid \alpha, \beta) \, d\lambda_i \right]$$
