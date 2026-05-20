@@ -1,7 +1,13 @@
 ---
 title: "Question 3&4"
 author: "Natalie C"
-format: pdf
+format:
+  pdf:
+    include-in-header: 
+      - text: |
+            \usepackage{amsmath}
+execute: 
+  echo: false
 editor: visual
 ---
 
@@ -75,7 +81,7 @@ $$ which is a product of $n$ functions, each of which depends on only one $\lamb
 
 Since repeated visits can take place , let $t_{ij}$ represent the waiting time for coffee j at cafe i. There fore the model specifications will be:
 
-$$T_{ij} \overset{\mathrm{iid}}{\sim}\text{Exponential}(\lambda_i)$$ where: $$ i = 1,2,3,....n \quad \text{&} \quad j = 1,2,3,....,v_i$$ $$\lambda_i \overset{\mathrm{iid}}{\sim} \text{Gamma}(\alpha, \beta)$$ \* used LMM to be able to typeset it correctly (the iid bit at the \~ bit).
+$$T_{ij} \overset{\mathrm{iid}}{\sim}\text{Exponential}(\lambda_i)$$ where: $$ i = 1,2,3,\dots,n \quad \text{\&} \quad j = 1,2,3,\dots,v_i$$ $$\lambda_i \overset{\mathrm{iid}}{\sim} \text{Gamma}(\alpha, \beta)$$ \* used LMM to be able to typeset it correctly (the iid bit at the \~ bit).
 
 ### Question 4
 
@@ -99,7 +105,9 @@ Exponential distributions have maximum entropy among distributions over positive
 
 ### Question 6:
 
-```{r, message=FALSE, output=FALSE}
+The model in Question 5 was implemented in Stan and fitted to the $\texttt{coffeetime}$ data using four chains with 1000 warmup and 2000 sampling iterations with seed of 123.
+
+```{r output=FALSE}
 stan_code_q6 <- "
 data {
   int<lower=0> N;
@@ -135,12 +143,30 @@ fit_q6 <- mod_q6$sample(
   iter_warmup = 1000,
   iter_sampling = 2000
 )
+```
 
+```{r}
+#| label: tbl-modsum
+#| tbl-cap: "Model Summary"
 pars = c("alpha", "beta", "lambda")
-kable(fit_q6$summary(variables = pars))
-cbind(1:4,as.data.frame(fit_q6$diagnostic_summary())) |>
-  kable(col.names = c("chains","divergences","max treedepth","EBMFI"))
+mod_sum <- fit_q6$summary(variables = pars)
+kable(mod_sum, digits = 3)
+```
 
+The model summary is given in @tbl-modsum and shows that there was no divergences or maximum tree depths that were hit and the E-BFMI is above 0.3 across all chains.
+
+```{r}
+#| label: tbl-diagsum
+#| tbl-cap: "Model Diagnostic Summary"
+cbind(1:4,as.data.frame(fit_q6$diagnostic_summary())) |>
+  kable(col.names = c("chains","divergences","max treedepth","EBFMI"), digits = 3)
+```
+
+The diagnostic summary is given in @tbl-diagsum which shows that all $\hat{R}$ values are approximately 1 and all ESS values are large. This indicates there was good convergene and efficient mixing. The posterior estimates for $\alpha$ and $\beta$ have a mean of `r round(mod_sum[1,2],2)` and `r round(mod_sum[2,2],2)` respectively, with the mean of $\lambda_i$ ranging from `r round(min(mod_sum[3:17,2]),2)` to `r round(max(mod_sum[3:17,2]),2)` minutes.
+
+```{r}
+#| label: fig-modhist
+#| fig-cap: "Posterior distribution of mean waiting time across cafés"
 post_q6 <- fit_q6$draws(variables = pars, format = "df") |>
   as_tibble() |>
   select(-starts_with(".")) |>
@@ -150,11 +176,12 @@ ggplot(post_q6, aes(x = mu)) +
   geom_histogram(bins = 60, fill = "steelblue", colour = "white") +
   labs(
     x = expression("Mean expected waiting time "*(mu)),
-    y = "Count",
-    title = "Posterior distribution of mean waiting time across cafés"
+    y = "Count"
   ) +
   theme_minimal()
 ```
+
+The histogram in @fig-modhist displays the mean expected waiting time across cafés, where $\mu=\frac{\alpha}{\beta}$. The histogram is right skewed with the data focused between 3 and 7 minutes, with a mean of `r round(mean(post_q6$mu),2)` which is similar to the observed sample mean of `r round(mean(coffeetime$time),2)` minutes.
 
 ### Question 7:
 
