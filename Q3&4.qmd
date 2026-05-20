@@ -28,14 +28,13 @@ in Equation 2 as a product of $n$ functions, each of which depends on only one $
 
 Since $T_i \sim$ Exponential$(\lambda_i)$, this means that the waiting time $t_i$ at café $i$ depends only on its specific rate parameter $\lambda_i$. Therefore, taking the conditional on $\lambda$, the individual observations $t_i$ are conditionally independent.
 
-Expressing this joint distribution as the product of individual distributions we have
-$$
+Expressing this joint distribution as the product of individual distributions we have $$
 \prod_{i=1}^n \pi(t_i \mid \lambda_i).
 $$
 
 The second part of the integrand is $\pi(\boldsymbol\lambda \mid \boldsymbol\theta)$. This is the joint prior distribution of all $n$ rate parameters, given the shared hyperparameters $\boldsymbol\theta = (\alpha, \beta)$.
 
-Since it is stated in Equation 1 that $\lambda_i \sim$Gamma($\alpha, \beta$) for $i= 1, ... n$. This implies that the parameters $\lambda_1,...,\lambda_n$ are independent and identically distributed (i.i.d.) conditional on the hyperparameters $\theta$. Hence, we can express the joint prior as a product of individual priors as shown below
+Since it is stated in Equation 1 that $\lambda_i \overset{\mathrm{iid}}{\sim}$Gamma($\alpha, \beta$) for $i= 1, ... n$. This implies that the parameters $\lambda_1,...,\lambda_n$ are independent and identically distributed (i.i.d.) conditional on the hyperparameters $\theta$. Hence, we can express the joint prior as a product of individual priors as shown below
 
 $$
 \prod_{i=1}^n \pi(\lambda_i \mid \theta).
@@ -43,7 +42,7 @@ $$ Substituting the two products that we found earlier back into the integrand w
 
 $$
 \pi(\textbf{t} \mid \boldsymbol\lambda) \pi(\boldsymbol\lambda \mid \boldsymbol\theta) = \left( \prod_{i=1}^n \pi(t_i \mid \lambda_i) \right) \left( \prod_{i=1}^n \pi(\lambda_i \mid \theta) \right).
-$$ 
+$$
 
 Since the products iterate over the same index $i$, we can group the terms for each $i$ together, which gives us
 
@@ -63,7 +62,6 @@ Hence, we can pull the product operator outside of the integral and express the 
 
 $$L(\theta) = \prod_{i=1}^{n} \int \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta) d\lambda_i, 
 $$ which is a product of $n$ functions, each of which depends on only one $\lambda_i$ as required.
-
 
 ### Question 3
 
