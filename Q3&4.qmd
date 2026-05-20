@@ -8,6 +8,7 @@ editor: visual
 ```{r}
 #loading of libraries
 library(readr)
+library(cmdstanr)
 ```
 
 ## Loading for dataset
@@ -102,3 +103,50 @@ Since $\lambda_i \sim \text{Exponential}(\phi)$, the mean of the prior is: $$ E[
 A reasonable guess is that the average waiting time at a café is 5 minutes, this means that setting $\frac{1}{\phi} = 5$ gives $\phi = 0.2$.
 
 Hence, we have $$T_{ij} \mid \lambda_i \sim \text{Exponential}(\lambda_i)$$ $$\lambda_i \sim \text{Exponential}(0.2), \quad i = 1,...,n$$
+
+
+### Question 8:
+```{r}
+q8_stan <- "
+data {
+  int  <lower =1 > N;                    // total number of observations
+  int  <lower=1> n;                      // number of cafés
+  vector <lower=0>[N] t;                 // The actual waiting times
+  array[N] int<lower=1, upper=n> cafe;   // café index for each obs
+}
+parameters {
+  vector<lower=0>[n] lambda;                  // mean waiting time per café
+}
+model {
+  // Priors
+  lambda ~ exponential(0.2); 
+  
+  // Likelihood
+  for (k in 1:N) {
+    t[k] ~ exponential(1.0 / lambda[cafe[k]]);
+  }
+}
+"
+mod <- cmdstan_model(write_stan_file(q8_stan))
+
+stan_data <- list(
+  n    = length(unique(coffeetime$cafe)),
+  N    = nrow(coffeetime),
+  cafe = as.integer(coffeetime$cafe),
+  t    = coffeetime$time
+)
+
+fit <- mod$sample(
+  data            = stan_data,
+  seed            = 123,
+  chains          = 4,
+  parallel_chains = 4,
+  iter_warmup     = 1000,
+  iter_sampling   = 2000
+)
+
+fit$summary()
+
+
+## MCMC diagonistics ??
+```
