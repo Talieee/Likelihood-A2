@@ -93,7 +93,7 @@ To specify a Bayesian "fixed effect" model, we treat each $\lambda_i$ as a separ
 
 Since $\lambda_i$ is the mean waiting time, it must be positive. Using information given in Question 5, we are going to use the Exponential distribution once again for the prior as the parameter is positive.
 
-So we have $$T_{ij} \mid \lambda_i \sim \text{Exponential}(\lambda_i)$$ $$\lambda_i \overset{\mathrm{iid}}{\sim} \text{Exponential}(\phi), \quad i = 1,...,n$$ where $\phi$ is a fixed hyperparameter.
+So we have $$T_{ij} \mid \lambda_i \sim \text{Exponential}(\lambda_i)$$ $$\lambda_i \sim \text{Exponential}(\phi), \quad i = 1,...,n$$ where $\phi$ is a fixed hyperparameter.
 
 To find the value of $\phi$, we used our domain knowledge about café waiting times.
 
@@ -101,4 +101,4 @@ Since $\lambda_i \sim \text{Exponential}(\phi)$, the mean of the prior is: $$ E[
 
 A reasonable guess is that the average waiting time at a café is 5 minutes, this means that setting $\frac{1}{\phi} = 5$ gives $\phi = 0.2$.
 
-Hence, we have $$T_{ij} \mid \lambda_i \sim \text{Exponential}(\lambda_i)$$ $$\lambda_i \overset{\mathrm{iid}}{\sim} \text{Exponential}(0.2), \quad i = 1,...,n$$
+Hence, we have $$T_{ij} \mid \lambda_i \sim \text{Exponential}(\lambda_i)$$ $$\lambda_i \sim \text{Exponential}(0.2), \quad i = 1,...,n$$
