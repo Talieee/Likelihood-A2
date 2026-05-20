@@ -8,14 +8,10 @@ editor: visual
 ```{r}
 #loading of libraries
 library(readr)
-<<<<<<< HEAD
-library(cmdstanr)
-=======
 library(tidyverse)
 library(cmdstanr)
 library(ggplot2)
 library(knitr)
->>>>>>> 1f376eb2c6154e7c9bdcce1c66915e6275358815
 ```
 
 ## Loading for dataset
@@ -182,7 +178,7 @@ data {
   int  <lower =1 > N;                    // total number of observations
   int  <lower=1> n;                      // number of cafés
   vector <lower=0>[N] t;                 // The actual waiting times
-  array[N] int<lower=1, upper=n> cafe;   // café index for each obs
+  array[N] int<lower=1, upper=n> i;   // café index for each obs
 }
 parameters {
   vector<lower=0>[n] lambda;                  // mean waiting time per café
@@ -198,14 +194,9 @@ model {
 "
 mod <- cmdstan_model(write_stan_file(stan_code_q8))
 
-stan_data <- list(
-  n    = length(unique(coffeetime$cafe)),
-  N    = nrow(coffeetime),
-  cafe = as.integer(coffeetime$cafe),
-  t    = coffeetime$time
-)
+stan_data <- list(N = N, n = n, t = t, i = i)
 
-fit <- mod$sample(
+fit_q8 <- mod$sample(
   data            = stan_data,
   seed            = 123,
   chains          = 4,
@@ -214,8 +205,10 @@ fit <- mod$sample(
   iter_sampling   = 2000
 )
 
-fit$summary()
+fit_q8$summary()
 
-
-## MCMC diagonistics ??
+pars_q8 = "lambda"
+kable(fit_q8$summary(variables = pars_q8))
+cbind(1:4,as.data.frame(fit_q8$diagnostic_summary())) |>
+  kable(col.names = c("chains","divergences","max treedepth","EBMFI"))
 ```
