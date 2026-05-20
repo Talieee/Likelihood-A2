@@ -8,13 +8,24 @@ editor: visual
 ```{r}
 #loading of libraries
 library(readr)
+<<<<<<< HEAD
 library(cmdstanr)
+=======
+library(tidyverse)
+library(cmdstanr)
+library(ggplot2)
+library(knitr)
+>>>>>>> 1f376eb2c6154e7c9bdcce1c66915e6275358815
 ```
 
 ## Loading for dataset
 
 ```{r}
 coffeetime <- read_csv("coffeetime.csv")
+N <- nrow(coffeetime) # sample size
+n <- n_distinct(coffeetime$cafe) # number of cafes
+t <- coffeetime$time # waiting time
+i <- coffeetime$cafe # cafe index
 ```
 
 ### Question 1:
@@ -84,6 +95,65 @@ Since the waiting times for the cafes are also independent we can take the produ
 
 $$L(\alpha, \beta \mid t_1, t_2, \dots, t_n) = \prod_{i = 1}^n \left[ \int \prod_{j=1}^{v_i} \pi(t_{ij} \mid \lambda_i) \pi(\lambda_i \mid \alpha, \beta) \, d\lambda_i \right]$$
 
+# Question 6:
+
+```{r, message=FALSE, output=FALSE}
+stan_code_q6 <- "
+data {
+  int<lower=0> N;
+  int<lower=0> n;
+  vector<lower=0>[N] t;
+  array[N] int<lower=1, upper=n> i;
+}
+
+parameters {
+  real<lower=0> alpha;
+  real<lower=0> beta;
+  vector<lower=0>[n] lambda;
+}
+
+model {
+  alpha ~ exponential(0.36);
+  beta ~ exponential(1.8);
+  lambda ~ gamma(alpha, beta);
+  for (k in 1:N) t[k] ~ exponential(1.0/lambda[i[k]]);
+}
+"
+
+stan_file_q6 <- write_stan_file(stan_code_q6)
+mod_q6 <- cmdstan_model(stan_file_q6) # compile C++ model from Stan code
+stan_data_q6 <- list(N = N, n = n, t = t, i = i)
+# sample posterior with MCMC
+fit_q6 <- mod_q6$sample(
+  data = stan_data_q6, 
+  seed = 123,
+  refresh = 0,
+  chains = 4,
+  parallel_chains = 4,
+  iter_warmup = 1000,
+  iter_sampling = 2000
+)
+
+pars = c("alpha", "beta", "lambda")
+kable(fit_q6$summary(variables = pars))
+cbind(1:4,as.data.frame(fit_q6$diagnostic_summary())) |>
+  kable(col.names = c("chains","divergences","max treedepth","EBMFI"))
+
+post_q6 <- fit_q6$draws(variables = pars, format = "df") |>
+  as_tibble() |>
+  select(-starts_with(".")) |>
+  mutate(mu = alpha/beta)
+
+ggplot(post_q6, aes(x = mu)) +
+  geom_histogram(bins = 60, fill = "steelblue", colour = "white") +
+  labs(
+    x = expression("Mean expected waiting time "*(mu)),
+    y = "Count",
+    title = "Posterior distribution of mean waiting time across cafés"
+  ) +
+  theme_minimal()
+```
+
 ### Question 7:
 
 In Question 5, the "random effects" model stated that the café-specific means shared a common distribution of $$ \lambda_i \overset{\mathrm{iid}}{\sim} \text{Gamma}(\alpha, \beta).$$
@@ -107,7 +177,7 @@ Hence, we have $$T_{ij} \mid \lambda_i \sim \text{Exponential}(\lambda_i)$$ $$\l
 
 ### Question 8:
 ```{r}
-q8_stan <- "
+stan_code_q8 <- "
 data {
   int  <lower =1 > N;                    // total number of observations
   int  <lower=1> n;                      // number of cafés
@@ -121,13 +191,12 @@ model {
   // Priors
   lambda ~ exponential(0.2); 
   
-  // Likelihood
   for (k in 1:N) {
     t[k] ~ exponential(1.0 / lambda[cafe[k]]);
   }
 }
 "
-mod <- cmdstan_model(write_stan_file(q8_stan))
+mod <- cmdstan_model(write_stan_file(stan_code_q8))
 
 stan_data <- list(
   n    = length(unique(coffeetime$cafe)),
