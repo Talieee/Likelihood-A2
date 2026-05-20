@@ -91,7 +91,13 @@ Since the waiting times for the cafes are also independent we can take the produ
 
 $$L(\alpha, \beta \mid t_1, t_2, \dots, t_n) = \prod_{i = 1}^n \left[ \int \prod_{j=1}^{v_i} \pi(t_{ij} \mid \lambda_i) \pi(\lambda_i \mid \alpha, \beta) \, d\lambda_i \right]$$
 
-# Question 6:
+### Question 5:
+
+Given $\lambda_i \overset{iid}{\sim} \text{Gamma}(\alpha,\beta)$ for $i=1,\dots,n$ from question 3. $\lambda_i$ is the mean waiting time for a coffee at café $i$ with a Gamma($\alpha$,$\beta$) distribution. The distribution has a mean and variance of $\mu=\frac{\alpha}{\beta}$ and $\sigma^2=\frac{\alpha}{\beta^2}$, respectively. Based on our domain knowledge, a reasonable prior guess is that the mean waiting time for a coffee at a café is 5 minutes and the standard deviation between café's waiting times are 3 minutes. By solving for $\beta$ we have $$\beta=\frac{\mu}{\sigma^2}=\frac{5}{9}\approx0.56$$ thus $$\alpha = \mu\beta=\frac{25}{9}\approx2.78.$$
+
+Exponential distributions have maximum entropy among distributions over positive real numbers with finite expectations. Therefore, let $\alpha$ and $\beta$ be exponential priors with rate parameters. Resulting in the following full Bayesian specification for the model in question 3: $$\begin{split} T_{ij} &\sim \text{Exponential}(\lambda_i),\\ \lambda_i &\overset{iid}{\sim} \text{Gamma}(\alpha,\beta), \\ \alpha &\sim \text{Exponential}(0.36), \\ \beta &\sim \text{Exponential}(1.8) \end{split}$$ where $i=1,\dots,n$ and $j=1,\dots,v_i$.
+
+### Question 6:
 
 ```{r, message=FALSE, output=FALSE}
 stan_code_q6 <- "
