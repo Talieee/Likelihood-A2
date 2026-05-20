@@ -175,21 +175,17 @@ Hence, we have $$T_{ij} \mid \lambda_i \sim \text{Exponential}(\lambda_i)$$ $$\l
 ```{r}
 stan_code_q8 <- "
 data {
-  int  <lower =1 > N;                    // total number of observations
-  int  <lower=1> n;                      // number of cafés
-  vector <lower=0>[N] t;                 // The actual waiting times
-  array[N] int<lower=1, upper=n> i;   // café index for each obs
+  int<lower=0> N;
+  int<lower=0> n;
+  vector<lower=0>[N] t;
+  array[N] int<lower=1, upper=n> i; 
 }
 parameters {
-  vector<lower=0>[n] lambda;                  // mean waiting time per café
+  vector<lower=0>[n] lambda;                
 }
 model {
-  // Priors
   lambda ~ exponential(0.2); 
-  
-  for (k in 1:N) {
-    t[k] ~ exponential(1.0 / lambda[cafe[k]]);
-  }
+  for (k in 1:N) t[k] ~ exponential(1.0/lambda[i[k]]);
 }
 "
 mod <- cmdstan_model(write_stan_file(stan_code_q8))
@@ -204,8 +200,6 @@ fit_q8 <- mod$sample(
   iter_warmup     = 1000,
   iter_sampling   = 2000
 )
-
-fit_q8$summary()
 
 pars_q8 = "lambda"
 kable(fit_q8$summary(variables = pars_q8))
