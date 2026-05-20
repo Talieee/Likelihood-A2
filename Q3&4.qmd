@@ -82,3 +82,23 @@ Our rate parameter remains unchanged as the waiting time for each cafe remains t
 Since the waiting times for the cafes are also independent we can take the product of the marginal likelihood for each cafe to find the general likelihood.
 
 $$L(\alpha, \beta \mid t_1, t_2, \dots, t_n) = \prod_{i = 1}^n \left[ \int \prod_{j=1}^{v_i} \pi(t_{ij} \mid \lambda_i) \pi(\lambda_i \mid \alpha, \beta) \, d\lambda_i \right]$$
+
+### Question 7:
+
+In Question 5, the "random effects" model stated that the café-specific means shared a common distribution of $$ \lambda_i \overset{\mathrm{iid}}{\sim} \text{Gamma}(\alpha, \beta).$$
+
+This means that information is pooled across the cafés, which indicates that the estimate for café $i$ is influenced by what is observed across all cafés (through $\alpha \text{ and } \beta$).
+
+To specify a Bayesian "fixed effect" model, we treat each $\lambda_i$ as a separate, independent parameter with no shared distribution, this means that each $\lambda_i$ now gets its own prior with no connection (information) to other cafés.
+
+Since $\lambda_i$ is the mean waiting time, it must be positive. Using information given in Question 5, we are going to use the Exponential distribution once again for the prior as the parameter is positive.
+
+So we have $$T_{ij} \mid \lambda_i \sim \text{Exponential}(\lambda_i)$$ $$\lambda_i \overset{\mathrm{iid}}{\sim} \text{Exponential}(\phi), \quad i = 1,...,n$$ where $\phi$ is a fixed hyperparameter.
+
+To find the value of $\phi$, we used our domain knowledge about café waiting times.
+
+Since $\lambda_i \sim \text{Exponential}(\phi)$, the mean of the prior is: $$ E[\lambda_i] = \frac{1}{\phi}.$$
+
+A reasonable guess is that the average waiting time at a café is 5 minutes, this means that setting $\frac{1}{\phi} = 5$ gives $\phi = 0.2$.
+
+Hence, we have $$T_{ij} \mid \lambda_i \sim \text{Exponential}(\lambda_i)$$ $$\lambda_i \overset{\mathrm{iid}}{\sim} \text{Exponential}(0.2), \quad i = 1,...,n$$
