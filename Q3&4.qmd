@@ -201,10 +201,10 @@ Since $\lambda_i \sim \text{Exponential}(\phi)$, the mean of the prior is: $$ E[
 
 A reasonable guess is that the average waiting time at a café is 5 minutes, this means that setting $\frac{1}{\phi} = 5$ gives $\phi = 0.2$.
 
-Hence, we have $$T_{ij} \mid \lambda_i \sim \text{Exponential}(\lambda_i)$$ $$\lambda_i \sim \text{Exponential}(0.2), \quad i = 1,...,n$$
-
+Hence, we have $$T_{ij} \mid \lambda_i \sim \text{Exponential}(\lambda_i)$$ $$\lambda_i \sim \text{Exponential}(0.2)$$ where $i = 1,...,n$ and $j=1,\dots,v_i$.
 
 ### Question 8:
+
 ```{r output=FALSE}
 stan_code_q8 <- "
 data {
@@ -243,7 +243,8 @@ pars_q8 = "lambda"
 mod_sum2 <- fe_fit$summary(variables = pars_q8)
 kable(mod_sum2, digits = 3)
 ```
-The $\hat{R}$ values for all lambdas shown in @tbl-modsum2 are extremely close to one, ranging from 0.9998 to 1.0019, this means that all 4 chains successfully converged to the same distribution. The ess_bulk values are all > 15000, and ess_tail values range from approximately 5000 to 6000. These values are very high, indicating efficient sampling. The posterior estimate for $\lambda_i$ have a mean that ranges from `r round(min(mod_sum2[1:15,2]),2)` to `r round(max(mod_sum2[1:15,2]),2)`minutes. 
+
+The $\hat{R}$ values for all lambdas shown in @tbl-modsum2 are extremely close to one, ranging from 0.9998 to 1.0019, this means that all 4 chains successfully converged to the same distribution. The ess_bulk values are all \> 15000, and ess_tail values range from approximately 5000 to 6000. These values are very high, indicating efficient sampling. The posterior estimate for $\lambda_i$ have a mean that ranges from `r round(min(mod_sum2[1:15,2]),2)` to `r round(max(mod_sum2[1:15,2]),2)`minutes.
 
 ```{r}
 #| label: tbl-diagsum2
@@ -252,7 +253,5 @@ The $\hat{R}$ values for all lambdas shown in @tbl-modsum2 are extremely close t
 cbind(1:4,as.data.frame(fe_fit$diagnostic_summary())) |>
   kable(col.names = c("chains","divergences","max treedepth","EBMFI"), digits = 3)
 ```
+
 @tbl-diagsum2 shows that the divergence is 0 across all chains. This means that the model is well-behaved and did not wander off the posterior surface. Moreover, all four of the chains have a max treedepth of zero, this is a good indication as deeper trees means more steps and thorough exploration per iteration. A value of zero means that no transition were cut short and Stan did not have to stop exploring early without finishing. This means that the posterior is not very difficult to traverse and the sampler did not need many steps to explore the regions thoroughly. All EBMFI values are very close to 1. This implies that the sampler's energy transitions are explaining nearly all the posterior variability, which means all regions of the posterior have been explored by the sampler.
-
-
-
