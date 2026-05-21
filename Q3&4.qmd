@@ -28,6 +28,7 @@ N <- nrow(coffeetime) # sample size
 n <- n_distinct(coffeetime$cafe) # number of cafes
 t <- coffeetime$time # waiting time
 i <- coffeetime$cafe # cafe index
+dat <- list(N = N, n = n, t = t, i = i)
 ```
 
 ### Question 1:
@@ -130,12 +131,11 @@ model {
 }
 "
 
-re_stan_file <- write_stan_file(re_stan_code)
-re_mod <- cmdstan_model(re_stan_file) # compile C++ model from Stan code
-re_data <- list(N = N, n = n, t = t, i = i)
+re_mod <- cmdstan_model(write_stan_file(re_stan_code)) # compile C++ model from Stan code
+
 # sample posterior with MCMC
 re_fit <- re_mod$sample(
-  data = re_data, 
+  data = dat, 
   seed = 123,
   refresh = 0,
   chains = 4,
@@ -221,12 +221,11 @@ model {
   for (k in 1:N) t[k] ~ exponential(1.0/lambda[i[k]]);
 }
 "
+
 fe_mod <- cmdstan_model(write_stan_file(fe_stan_code))
 
-fe_stan_data <- list(N = N, n = n, t = t, i = i)
-
 fe_fit <- fe_mod$sample(
-  data            = fe_stan_data,
+  data            = dat,
   seed            = 123,
   chains          = 4,
   parallel_chains = 4,
