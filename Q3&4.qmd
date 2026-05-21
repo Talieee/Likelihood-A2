@@ -254,3 +254,26 @@ cbind(1:4,as.data.frame(fe_fit$diagnostic_summary())) |>
 ```
 
 @tbl-diagsum2 shows that the divergence is 0 across all chains. This means that the model is well-behaved and did not wander off the posterior surface. Moreover, all four of the chains have a max treedepth of zero, this is a good indication as deeper trees means more steps and thorough exploration per iteration. A value of zero means that no transition were cut short and Stan did not have to stop exploring early without finishing. This means that the posterior is not very difficult to traverse and the sampler did not need many steps to explore the regions thoroughly. All EBMFI values are very close to 1. This implies that the sampler's energy transitions are explaining nearly all the posterior variability, which means all regions of the posterior have been explored by the sampler.
+
+### Question 9
+
+```{r}
+#| label: fig-comparison
+#| fig-cap: "Posterior medians and 90% credible intervals for café mean waiting times"
+
+compare_df <- rbind(mod_sum[-c(1,2), ],mod_sum2) |>
+  mutate(model = c(rep("Random effects", 15), rep("Fixed effects", 15)), 
+         cafe = c(1:15,1:15))
+
+ggplot(compare_df, aes(x = cafe, y = median, colour = model, 
+                       ymin = q5, ymax = q95)) +
+  geom_hline(yintercept = median(re_post$mu), lty = "dashed", colour = "grey40") +
+  geom_errorbar(position = position_dodge(width = 0.5), width = 0.3) +
+  geom_point(position = position_dodge(width = 0.5), size = 2) +
+  scale_x_continuous(breaks = 1:15) +
+  scale_colour_manual(values = c("Random effects" = "steelblue",
+                                 "Fixed effects" = "salmon")) +
+  labs(x = "Café", y = expression("Expected waiting time "*mu*" (minutes)"),
+       colour = "Model") +
+  theme_minimal()
+```
