@@ -35,48 +35,35 @@ dat <- list(N = N, n = n, t = t, i = i)
 
 To express the integrand
 
-$$
-L(\boldsymbol\theta) = \pi(\textbf{t} \mid \boldsymbol\theta) = \int \pi (\textbf{t} \mid \boldsymbol\lambda) \pi (\boldsymbol\lambda \mid \boldsymbol\theta) d \boldsymbol\lambda
-$$
+$$L(\boldsymbol\theta) = \pi(\textbf{t} \mid \boldsymbol\theta) = \int \pi (\textbf{t} \mid \boldsymbol\lambda) \pi (\boldsymbol\lambda \mid \boldsymbol\theta) d \boldsymbol\lambda$$
 
 in Equation 2 as a product of $n$ functions, each of which depends on only one $\lambda_i$, we first need to factorise the conditional likelihood $\pi (\textbf{t} \mid \lambda)$ (the first part of the integrand).
 
 Since $T_i \sim$ Exponential$(\lambda_i)$, this means that the waiting time $t_i$ at café $i$ depends only on its specific rate parameter $\lambda_i$. Therefore, taking the conditional on $\lambda$, the individual observations $t_i$ are conditionally independent.
 
-Expressing this joint distribution as the product of individual distributions we have $$
-\prod_{i=1}^n \pi(t_i \mid \lambda_i).
-$$
+Expressing this joint distribution as the product of individual distributions we have $$\prod_{i=1}^n \pi(t_i \mid \lambda_i).$$
 
 The second part of the integrand is $\pi(\boldsymbol\lambda \mid \boldsymbol\theta)$. This is the joint prior distribution of all $n$ rate parameters, given the shared hyperparameters $\boldsymbol\theta = (\alpha, \beta)$.
 
 Since it is stated in Equation 1 that $\lambda_i \overset{\mathrm{iid}}{\sim}$Gamma($\alpha, \beta$) for $i= 1, ... n$. This implies that the parameters $\lambda_1,...,\lambda_n$ are independent and identically distributed (i.i.d.) conditional on the hyperparameters $\theta$. Hence, we can express the joint prior as a product of individual priors as shown below
 
-$$
-\prod_{i=1}^n \pi(\lambda_i \mid \theta).
-$$ Substituting the two products that we found earlier back into the integrand we have,
+$$\prod_{i=1}^n \pi(\lambda_i \mid \theta).$$ Substituting the two products that we found earlier back into the integrand we have,
 
-$$
-\pi(\textbf{t} \mid \boldsymbol\lambda) \pi(\boldsymbol\lambda \mid \boldsymbol\theta) = \left( \prod_{i=1}^n \pi(t_i \mid \lambda_i) \right) \left( \prod_{i=1}^n \pi(\lambda_i \mid \theta) \right).
-$$
+$$\pi(\textbf{t} \mid \boldsymbol\lambda) \pi(\boldsymbol\lambda \mid \boldsymbol\theta) = \left( \prod_{i=1}^n \pi(t_i \mid \lambda_i) \right) \left( \prod_{i=1}^n \pi(\lambda_i \mid \theta) \right).$$
 
 Since the products iterate over the same index $i$, we can group the terms for each $i$ together, which gives us
 
-$$
-\prod_{i=1}^{n} \Big[ \pi(t_{i}\mid \lambda_{i})\pi(\lambda_{i} \mid \theta) \Big].
-$$
+$$\prod_{i=1}^{n} \Big[ \pi(t_{i}\mid \lambda_{i})\pi(\lambda_{i} \mid \theta) \Big].$$
 
 Now, substituting the rearranged integrand back into the full integral we have the following:
 
-$$
-L(\theta) = \int \dots \int \prod_{i=1}^{n} \Big[ \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta) \Big] d\lambda_i \dots d\lambda_{n}.
-$$
+$$L(\theta) = \int \dots \int \prod_{i=1}^{n} \Big[ \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta) \Big] d\lambda_i \dots d\lambda_{n}.$$
 
 Since the limits of integration are independent and the integrand is separable as a product of functions of distinct variables, the joint integral simplifies to the product of \$n\$ individual, one-dimensional integrals.
 
 Hence, we can pull the product operator outside of the integral and express the likelihood of $\theta$ as
 
-$$L(\theta) = \prod_{i=1}^{n} \int \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta) d\lambda_i, 
-$$ which is a product of $n$ functions, each of which depends on only one $\lambda_i$ as required.
+$$L(\theta) = \prod_{i=1}^{n} \int \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta) d\lambda_i, $$ which is a product of $n$ functions, each of which depends on only one $\lambda_i$ as required.
 
 ### Question 3
 
@@ -277,3 +264,5 @@ ggplot(compare_df, aes(x = cafe, y = median, colour = model,
        colour = "Model") +
   theme_minimal()
 ```
+
+As shown in the plot, the random effects estimates are being pulled towards the posterior median of the mean expected waiting time across cafés, represented by the dashed horizontal line, in comparison to the fixed effects estimates which are further from it, which is most visible at the extremes, such as cafés 8 and 10. This makes sense intuitively, as the random effects model uses shrinkage to share information across all cafés rather than estimating each one completely independently. For most of the cafés, the credibility intervals from the random effects model are narrower and more stable compared to those from the fixed effects model, though there are some exceptions, such as café 10, which shows wider random effects intervals.
