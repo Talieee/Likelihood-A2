@@ -108,7 +108,7 @@ Exponential distributions have maximum entropy among distributions over positive
 The model in Question 5 was implemented in Stan and fitted to the $\texttt{coffeetime}$ data using four chains with 1000 warmup and 2000 sampling iterations with seed of 123.
 
 ```{r output=FALSE}
-stan_code_q6 <- "
+re_stan_code <- "
 data {
   int<lower=0> N;
   int<lower=0> n;
@@ -130,12 +130,12 @@ model {
 }
 "
 
-stan_file_q6 <- write_stan_file(stan_code_q6)
-re_mod <- cmdstan_model(stan_file_q6) # compile C++ model from Stan code
-stan_data_q6 <- list(N = N, n = n, t = t, i = i)
+re_stan_file <- write_stan_file(re_stan_code)
+re_mod <- cmdstan_model(re_stan_file) # compile C++ model from Stan code
+re_data <- list(N = N, n = n, t = t, i = i)
 # sample posterior with MCMC
 re_fit <- re_mod$sample(
-  data = stan_data_q6, 
+  data = re_data, 
   seed = 123,
   refresh = 0,
   chains = 4,
@@ -148,8 +148,8 @@ re_fit <- re_mod$sample(
 ```{r}
 #| label: tbl-modsum
 #| tbl-cap: "Model Summary"
-pars = c("alpha", "beta", "lambda")
-mod_sum <- re_fit$summary(variables = pars)
+pars_re = c("alpha", "beta", "lambda")
+mod_sum <- re_fit$summary(variables = pars_re)
 kable(mod_sum, digits = 3)
 ```
 
@@ -167,12 +167,12 @@ The diagnostics summary is given in @tbl-diagsum and shows that there was no div
 ```{r}
 #| label: fig-modhist
 #| fig-cap: "Posterior distribution of mean waiting time across cafés"
-post_q6 <- re_fit$draws(variables = pars, format = "df") |>
+re_post <- re_fit$draws(variables = pars_re, format = "df") |>
   as_tibble() |>
   select(-starts_with(".")) |>
   mutate(mu = alpha/beta)
 
-ggplot(post_q6, aes(x = mu)) +
+ggplot(re_post, aes(x = mu)) +
   geom_histogram(bins = 60, fill = "steelblue", colour = "white") +
   labs(
     x = expression("Mean expected waiting time "*(mu)),
@@ -181,7 +181,7 @@ ggplot(post_q6, aes(x = mu)) +
   theme_minimal()
 ```
 
-The histogram in @fig-modhist displays the mean expected waiting time across cafés, where $\mu=\frac{\alpha}{\beta}$. The histogram is right skewed with the data focused between 3 and 7 minutes, with a mean of `r round(mean(post_q6$mu),2)` which is similar to the observed sample mean of `r round(mean(coffeetime$time),2)` minutes.
+The histogram in @fig-modhist displays the mean expected waiting time across cafés, where $\mu=\frac{\alpha}{\beta}$. The histogram is right skewed with the data focused between 3 and 7 minutes, with a mean of `r round(mean(re_post$mu),2)` which is similar to the observed sample mean of `r round(mean(coffeetime$time),2)` minutes.
 
 ### Question 7:
 
@@ -206,7 +206,7 @@ Hence, we have $$T_{ij} \mid \lambda_i \sim \text{Exponential}(\lambda_i)$$ $$\l
 ### Question 8:
 
 ```{r output=FALSE}
-stan_code_q8 <- "
+fe_stan_code <- "
 data {
   int<lower=0> N;
   int<lower=0> n;
@@ -221,12 +221,12 @@ model {
   for (k in 1:N) t[k] ~ exponential(1.0/lambda[i[k]]);
 }
 "
-fe_mod <- cmdstan_model(write_stan_file(stan_code_q8))
+fe_mod <- cmdstan_model(write_stan_file(fe_stan_code))
 
-stan_data_q8 <- list(N = N, n = n, t = t, i = i)
+fe_stan_data <- list(N = N, n = n, t = t, i = i)
 
 fe_fit <- fe_mod$sample(
-  data            = stan_data_q8,
+  data            = fe_stan_data,
   seed            = 123,
   chains          = 4,
   parallel_chains = 4,
@@ -239,8 +239,8 @@ fe_fit <- fe_mod$sample(
 #| label: tbl-modsum2
 #| tbl-cap: "Model Summary"
 
-pars_q8 = "lambda"
-mod_sum2 <- fe_fit$summary(variables = pars_q8)
+pars_fe = "lambda"
+mod_sum2 <- fe_fit$summary(variables = pars_fe)
 kable(mod_sum2, digits = 3)
 ```
 
