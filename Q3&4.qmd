@@ -153,7 +153,7 @@ mod_sum <- fit_q6$summary(variables = pars)
 kable(mod_sum, digits = 3)
 ```
 
-The model summary is given in @tbl-modsum and shows that there was no divergences or maximum tree depths that were hit and the EBFMI is above 0.3 across all chains.
+The model summary is given in @tbl-modsum which shows that all $\hat{R}$ values are approximately 1 and all ESS values are large. This indicates there was good convergene and efficient mixing. The posterior estimates for $\alpha$ and $\beta$ have a mean of `r round(mod_sum[1,2],2)` and `r round(mod_sum[2,2],2)` respectively, with the mean of $\lambda_i$ ranging from `r round(min(mod_sum[3:17,2]),2)` to `r round(max(mod_sum[3:17,2]),2)` minutes.
 
 ```{r}
 #| label: tbl-diagsum
@@ -162,7 +162,7 @@ cbind(1:4,as.data.frame(fit_q6$diagnostic_summary())) |>
   kable(col.names = c("chains","divergences","max treedepth","EBFMI"), digits = 3)
 ```
 
-The diagnostic summary is given in @tbl-diagsum which shows that all $\hat{R}$ values are approximately 1 and all ESS values are large. This indicates there was good convergence and efficient mixing. The posterior estimates for $\alpha$ and $\beta$ have a mean of `r round(mod_sum[1,2],2)` and `r round(mod_sum[2,2],2)` respectively, with the mean of $\lambda_i$ ranging from `r round(min(mod_sum[3:17,2]),2)` to `r round(max(mod_sum[3:17,2]),2)` minutes.
+The diagnostics summary is given in @tbl-diagsum and shows that there was no divergences or maximum tree depths that were hit and the E-BFMI is above 0.3 across all chains.
 
 ```{r}
 #| label: fig-modhist
@@ -252,7 +252,7 @@ The $\hat{R}$ values for all lambdas shown in @tbl-modsum2 are extremely close t
 cbind(1:4,as.data.frame(fit_q8$diagnostic_summary())) |>
   kable(col.names = c("chains","divergences","max treedepth","EBMFI"), digits = 3)
 ```
-@tbl-diagsum2 shows that the divergence is 0 across all chains. This means that the model is well-behaved and did not wander off the posterior surface. Moreover, all four of the chains have a max treedepth of zero, this is a good indication as deeper trees means more steps and thorough exploration per iteration. A value of zero means that no transition were cut short and Stan did not have to stop exploring early without finishing. This means that the posterior is not very difficult to traverse and the sampler did not need many steps to explore the regions thoroughly. EBMFI stands for Energy Bayesian Fraction of Missing Information and it measures whether the sampler is capturing all the variability in the posterior using energy transitions. All EBMFI values are very close to 1. This implies that the sampler's energy transitions are explaining nearly all the posterior variability, which means all regions of the posterior have been explored by the sampler.
+@tbl-diagsum2 shows that the divergence is 0 across all chains. This means that the model is well-behaved and did not wander off the posterior surface. Moreover, all four of the chains have a max treedepth of zero, this is a good indication as deeper trees means more steps and thorough exploration per iteration. A value of zero means that no transition were cut short and Stan did not have to stop exploring early without finishing. This means that the posterior is not very difficult to traverse and the sampler did not need many steps to explore the regions thoroughly. All EBMFI values are very close to 1. This implies that the sampler's energy transitions are explaining nearly all the posterior variability, which means all regions of the posterior have been explored by the sampler.
 
 
 
