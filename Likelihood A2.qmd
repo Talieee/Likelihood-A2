@@ -1,6 +1,4 @@
 ---
-title: "Assignment 2"
-author: "Donnica Haupt & Natalie Chidikwindi & Rosie Chen"
 format:
   pdf:
     include-in-header: 
@@ -12,6 +10,51 @@ execute:
   message: false
 editor: visual
 ---
+
+```{=latex}
+\begin{titlepage}
+\begin{center}
+\vspace{2 cm}
+
+{\Large STATISTICS HONOURS - LIKELIHOOD}\\
+\vspace{0.3cm}
+{\large Department of Statistical Sciences\\University of Cape Town}\\
+\vspace{6 cm}
+
+\rule{16 cm}{0.3 mm}\\
+\vspace{0.5 cm}
+{\Large \textbf{Assignment 2}}\\
+\vspace{0.5cm}
+\rule{16 cm}{0.3 mm}\\
+
+\vspace{2 cm}
+
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft}\large
+\emph{Authors:}\\
+\vspace{0.5 cm}
+Natalie Chidikwindi\\
+Rosie Chen\\
+Donnica Haupt
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+\begin{flushright}\large
+\emph{Student Numbers:}\\
+\vspace{0.5 cm}
+CHDNAT002\\
+CHNYOJ001\\
+HPTDON002
+\end{flushright}
+\end{minipage}
+
+\vfill
+{\large \today}\\
+\end{center}
+\end{titlepage}
+
+\newpage
+```
 
 ```{r setup}
 # loading libraries
