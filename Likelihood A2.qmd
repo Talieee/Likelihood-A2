@@ -134,7 +134,7 @@ $$T_{ij} \mid \lambda_i {\sim}\text{Exponential}(\lambda_i)$$ where: $$ i = 1,2,
 
 # Question 4
 
-Following the same logic as Question 1, but now accounting for $v_i$ visits per café, we marginalise out $\lambda_i$ from the joint distribution. Conditional on $\lambda_i$, the $v_i$ waiting times at caf'e $i$ are independent, so the joint density within café $i$ factorises as $\prod_{j=1}^{v_i} \pi(t_{ij} | \lambda_i)$. Since the caf'es are also conditionally independent given $\boldsymbol{\lambda}$, the full likelihood becomes:
+Following the same logic as Question 1, but now accounting for $v_i$ visits per café, we marginalise out $\lambda_i$ from the joint distribution. Conditional on $\lambda_i$, the $v_i$ waiting times at café $i$ are independent, so the joint density within café $i$ factorises as $\prod_{j=1}^{v_i} \pi(t_{ij} | \lambda_i)$. Since the cafés are also conditionally independent given $\boldsymbol{\lambda}$, the full likelihood becomes:
 
 $$L_i(\alpha, \beta | t_i) = \int\prod_{j=1}^{v_i} \pi(t_{ij}  | \lambda_i)  \pi(\lambda_i | \alpha, \beta) d\lambda_i$$
 
