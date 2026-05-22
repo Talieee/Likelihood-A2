@@ -1,6 +1,6 @@
 ---
 title: "Assignment 2"
-author: "Donnica Haupt & Natalie Chidikwindi & Yo-Jen Chen"
+author: "Donnica Haupt & Natalie Chidikwindi & Rosie Chen"
 format:
   pdf:
     include-in-header: 
@@ -57,7 +57,7 @@ Now, substituting the rearranged integrand back into the full integral we have t
 
 $$L(\theta) = \int \dots \int \prod_{i=1}^{n} \Big[ \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta) \Big] d\lambda_i \dots d\lambda_{n}.$$
 
-Since the limits of integration are independent and the integrand is separable as a product of functions of distinct variables, the joint integral simplifies to the product of \$n\$ individual, one-dimensional integrals.
+Since each factor $\Big[ \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta) \Big]$ depends on $\lambda$ only through $\lambda_i$, by Fubini's theorem the $n$-dimensional integral separates into a product of $n$ one-dimensional integrals.
 
 Hence, we can pull the product operator outside of the integral and express the likelihood of $\theta$ as
 
@@ -176,7 +176,7 @@ This means that information is pooled across the cafés, which indicates that th
 
 To specify a Bayesian "fixed effect" model, we treat each $\lambda_i$ as a separate, independent parameter with no shared distribution, this means that each $\lambda_i$ now gets its own prior with no connection (information) to other cafés.
 
-Since $\lambda_i$ is the mean waiting time, it must be positive. Using information given in Question 5, we are going to use the Exponential distribution once again for the prior as the parameter is positive.
+Since $\lambda_i$ is the mean waiting time, it must be positive. As in Question 5, an Exponential prior is used.
 
 So we have $$T_{ij} \mid \lambda_i \sim \text{Exponential}(\lambda_i)$$ $$\lambda_i \sim \text{Exponential}(\phi), \quad i = 1,...,n$$ where $\phi$ is a fixed hyperparameter.
 
@@ -239,7 +239,7 @@ cbind(1:4,as.data.frame(fe_fit$diagnostic_summary())) |>
   kable(col.names = c("chains","divergences","max treedepth","EBMFI"), digits = 3)
 ```
 
-@tbl-diagsum2 shows that the divergence is 0 across all chains. This means that the model is well-behaved and did not wander off the posterior surface. Moreover, all four of the chains have a max treedepth of zero, this is a good indication as deeper trees means more steps and thorough exploration per iteration. A value of zero means that no transition were cut short and Stan did not have to stop exploring early without finishing. This means that the posterior is not very difficult to traverse and the sampler did not need many steps to explore the regions thoroughly. All EBMFI values are very close to 1. This implies that the sampler's energy transitions are explaining nearly all the posterior variability, which means all regions of the posterior have been explored by the sampler.
+@tbl-diagsum2 shows that the divergence is 0 across all chains. This means that the model is well-behaved and did not wander off the posterior surface. No transitions hit the maximum treedepth across any chain, indicating that the sampler had sufficient room to fully explore the posterior at each step without being forced to terminate early. This means that the posterior is not very difficult to traverse and the sampler did not need many steps to explore the regions thoroughly. All EBFMI values are very close to 1. This implies that the sampler's energy transitions are explaining nearly all the posterior variability, which means all regions of the posterior have been explored by the sampler.
 
 ### Question 9
 
