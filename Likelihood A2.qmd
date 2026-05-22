@@ -72,7 +72,7 @@ i <- coffeetime$cafe # cafe index
 dat <- list(N = N, n = n, t = t, i = i)
 ```
 
-### Question 1:
+# Question 1:
 
 To express the integrand
 
@@ -106,13 +106,13 @@ Hence, we can pull the product operator outside of the integral and express the 
 
 $$L(\theta) = \prod_{i=1}^{n} \int \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta) d\lambda_i, $$ which is a product of $n$ functions, each of which depends on only one $\lambda_i$ as required.
 
-### Question 3
+# Question 3
 
 Since repeated visits can take place , let $t_{ij}$ represent the waiting time for coffee j at cafe i. Therefore the model specifications will be:
 
 $$T_{ij} \mid \lambda_i {\sim}\text{Exponential}(\lambda_i)$$ where: $$ i = 1,2,3,\dots,n \quad \& \quad j = 1,2,3,\dots,v_i$$ $$\lambda_i \overset{\mathrm{iid}}{\sim} \text{Gamma}(\alpha, \beta)$$
 
-### Question 4
+# Question 4
 
 Following the same logic as Question 1, but now accounting for $v_i$ visits per café, we marginalise out $\lambda_i$ from the joint distribution. Conditional on $\lambda_i$, the $v_i$ waiting times at caf'e $i$ are independent, so the joint density within café $i$ factorises as $\prod_{j=1}^{v_i} \pi(t_{ij} | \lambda_i)$. Since the caf'es are also conditionally independent given $\boldsymbol{\lambda}$, the full likelihood becomes:
 
@@ -126,13 +126,13 @@ Since the waiting times across cafés are independent, we obtain the full likeli
 
 $$L(\alpha, \beta \mid t_1, t_2, \dots, t_n) = \prod_{i = 1}^n \left[ \int \prod_{j=1}^{v_i} \pi(t_{ij} \mid \lambda_i) \pi(\lambda_i \mid \alpha, \beta) \, d\lambda_i \right]$$
 
-### Question 5:
+# Question 5:
 
 Given $\lambda_i \overset{iid}{\sim} \text{Gamma}(\alpha,\beta)$ for $i=1,\dots,n$ from question 3. $\lambda_i$ is the mean waiting time for a coffee at café $i$ with a Gamma($\alpha$,$\beta$) distribution. The distribution has a mean and variance of $\mu=\frac{\alpha}{\beta}$ and $\sigma^2=\frac{\alpha}{\beta^2}$, respectively. Based on our domain knowledge, a reasonable prior guess is that the mean waiting time for a coffee at a café is 5 minutes and the standard deviation between café's waiting times are 3 minutes. By solving for $\beta$ we have $$\beta=\frac{\mu}{\sigma^2}=\frac{5}{9}\approx0.56$$ thus $$\alpha = \mu\beta=\frac{25}{9}\approx2.78.$$
 
 Exponential distributions have maximum entropy among distributions over positive real numbers with finite expectations. Therefore, let $\alpha$ and $\beta$ be exponential priors with rate parameters. Resulting in the following full Bayesian specification for the model in question 3: $$\begin{split} T_{ij} &\sim \text{Exponential}(\lambda_i),\\ \lambda_i &\overset{iid}{\sim} \text{Gamma}(\alpha,\beta), \\ \alpha &\sim \text{Exponential}(0.36), \\ \beta &\sim \text{Exponential}(1.8) \end{split}$$ where $i=1,\dots,n$ and $j=1,\dots,v_i$.
 
-### Question 6:
+# Question 6:
 
 The model in Question 5 was implemented in Stan and fitted to the $\texttt{coffeetime}$ data using four chains with 1000 warmup and 2000 sampling iterations with seed of 123.
 
@@ -211,7 +211,7 @@ ggplot(re_post, aes(x = mu)) +
 
 The histogram in @fig-modhist displays the mean expected waiting time across cafés, where $\mu=\frac{\alpha}{\beta}$. The histogram is right skewed with the data focused between 3 and 7 minutes, with a mean of `r round(mean(re_post$mu),2)` which is similar to the observed sample mean of `r round(mean(coffeetime$time),2)` minutes.
 
-### Question 7:
+# Question 7:
 
 In Question 5, the "random effects" model stated that the café-specific means shared a common distribution of $$ \lambda_i \overset{\mathrm{iid}}{\sim} \text{Gamma}(\alpha, \beta).$$
 
@@ -231,7 +231,7 @@ A reasonable guess is that the average waiting time at a café is 5 minutes, thi
 
 Hence, we have $$T_{ij} \mid \lambda_i \sim \text{Exponential}(\lambda_i)$$ $$\lambda_i \sim \text{Exponential}(0.2)$$ where $i = 1,...,n$ and $j=1,\dots,v_i$.
 
-### Question 8:
+# Question 8:
 
 ```{r output=FALSE}
 fe_stan_code <- "
@@ -284,7 +284,7 @@ cbind(1:4,as.data.frame(fe_fit$diagnostic_summary())) |>
 
 @tbl-diagsum2 shows that the divergence is 0 across all chains. This means that the model is well-behaved and did not wander off the posterior surface. No transitions hit the maximum treedepth across any chain, indicating that the sampler had sufficient room to fully explore the posterior at each step without being forced to terminate early. This means that the posterior is not very difficult to traverse and the sampler did not need many steps to explore the regions thoroughly. All EBFMI values are very close to 1. This implies that the sampler's energy transitions are explaining nearly all the posterior variability, which means all regions of the posterior have been explored by the sampler.
 
-### Question 9
+# Question 9
 
 ```{r}
 #| label: fig-comparison
@@ -309,7 +309,7 @@ ggplot(compare_df, aes(x = cafe, y = median, colour = model,
 
 As shown in the plot, the random effects estimates are being pulled towards the posterior median of the mean expected waiting time across cafés, represented by the dashed horizontal line, in comparison to the fixed effects estimates which are further from it, which is most visible at the extremes, such as cafés 8 and 10. This makes sense intuitively, as the random effects model uses shrinkage to share information across all cafés rather than estimating each one completely independently. For most of the cafés, the credibility intervals from the random effects model are narrower and more stable compared to those from the fixed effects model.
 
-### Question 10
+# Question 10
 
 The population parameters $\alpha$ and $\beta$ define the Gamma distribution from which each café's mean waiting time $\lambda_i$ is drawn. Information about $\alpha$ and $\beta$ therefore accumulates through observing many cafés. Each café provides one independent draw from this population distribution.
 
