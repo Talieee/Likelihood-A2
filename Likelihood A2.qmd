@@ -56,7 +56,6 @@ HPTDON002
 \newpage
 ```
 
-
 \section*{Plagiarism Declaration}
 
 We, Rosie, Donnica, and Natalie, declare that this assignment and the work presented in it are our own.
@@ -68,10 +67,10 @@ We confirm that:
     \item Where we have used the words of others, we have indicated this by the use of quotation marks. With the exception of such quotations, this assignment is entirely our own work.
     \item LLMs were used for: 
     \begin{itemize}
-            \item typesetting equations correctly ($\overset{\mathrm{iid}}{\sim}$ and big brackets $\Big[ \Big]$).
-            \item checking the grammar of the written interpretations.
-            \item checking our understanding of the MCMC diagnostics as it was not covered in class.
-            \item the functions needed to plot the CIs on the y-axis in Question 9.
+            \item Formatting and typesetting complex notations ($\overset{\mathrm{iid}}{\sim}$ and big brackets $\Big[ \Big]$).
+            \item Refining grammar of the written interpretations.
+            \item Clarifying conceptual understanding regarding MCMC diagnostics.
+            \item Functions needed to plot the confidence intervals in Question 9.
         \end{itemize}
 \end{itemize}
 
