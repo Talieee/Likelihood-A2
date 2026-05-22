@@ -120,7 +120,7 @@ Now, substituting the rearranged integrand back into the full integral we have t
 
 $$L(\theta) = \int \dots \int \prod_{i=1}^{n} \Big[ \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta) \Big] d\lambda_i \dots d\lambda_{n}.$$
 
-Since each factor $\Big[ \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta) \Big]$ depends on $\lambda$ only through $\lambda_i$, by Fubini's theorem the $n$-dimensional integral separates into a product of $n$ one-dimensional integrals.
+Since each factor $\Big[ \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta) \Big]$ depends on $\lambda$ only through $\lambda_i$, hence the $n$-dimensional integral separates into a product of $n$ one-dimensional integrals.
 
 Hence, we can pull the product operator outside of the integral and express the likelihood of $\theta$ as
 
