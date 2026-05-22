@@ -67,21 +67,21 @@ $$L(\theta) = \prod_{i=1}^{n} \int \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta)
 
 ### Question 3
 
-Since repeated visits can take place , let $t_{ij}$ represent the waiting time for coffee j at cafe i. There fore the model specifications will be:
+Since repeated visits can take place , let $t_{ij}$ represent the waiting time for coffee j at cafe i. Therefore the model specifications will be:
 
-$$T_{ij} \overset{\mathrm{iid}}{\sim}\text{Exponential}(\lambda_i)$$ where: $$ i = 1,2,3,\dots,n \quad \text{\&} \quad j = 1,2,3,\dots,v_i$$ $$\lambda_i \overset{\mathrm{iid}}{\sim} \text{Gamma}(\alpha, \beta)$$ \* used LMM to be able to typeset it correctly (the iid bit at the \~ bit).
+$$T_{ij} \mid \lambda_i {\sim}\text{Exponential}(\lambda_i)$$ where: $$ i = 1,2,3,\dots,n \quad \text{&} \quad j = 1,2,3,\dots,v_i$$ $$\lambda_i \overset{\mathrm{iid}}{\sim} \text{Gamma}(\alpha, \beta)$$
 
 ### Question 4
 
-In Question 1 we have:
+Following the same logic as Question 1, but now accounting for $v_i$ visits per café, we marginalise out $\lambda_i$ from the joint distribution. Conditional on $\lambda_i$, the $v_i$ waiting times at caf'e $i$ are independent, so the joint density within café $i$ factorises as $\prod_{j=1}^{v_i} \pi(t_{ij} | \lambda_i)$. Since the caf'es are also conditionally independent given $\boldsymbol{\lambda}$, the full likelihood becomes:
 
-If we are told that the visits to the coffee shops are independent, then we can rewrite the likelihood to visit cafe i in the following way: $$ L_i(\alpha, \beta | t_i) = \int\prod_j^{v_i} \pi(t_{ij}  | \lambda_i)  \pi(\lambda_i | \alpha, \beta) d\lambda_i$$
+$$L_i(\alpha, \beta | t_i) = \int\prod_{j=1}^{v_i} \pi(t_{ij}  | \lambda_i)  \pi(\lambda_i | \alpha, \beta) d\lambda_i$$
 
-Where $t_{ij}$ is the waiting time for coffee j at time i.
+where $t_{ij}$ is the waiting time for visit $j$ at café $i$.
 
-Our rate parameter remains unchanged as the waiting time for each cafe remains the same regardless how many times you go for another cup of coffee. Since $\lambda_i$ is an unobserved random variable, we integrate it out using its distribution $\pi(\lambda_i | \alpha, \beta)$. The parameters $\alpha$ and $\beta$ are the fixed parameters we're estimating.
+Our rate parameter $\lambda_i$ remains unchanged---the waiting time distribution for each café is independent of how many visits we make. Since $\lambda_i$ is an unobserved random variable, we integrate it out using its distribution $\pi(\lambda_i | \alpha, \beta)$, where $\alpha$ and $\beta$ are the fixed parameters we're estimating.
 
-Since the waiting times for the cafes are also independent we can take the product of the marginal likelihood for each cafe to find the general likelihood.
+Since the waiting times across cafés are independent, we obtain the full likelihood by taking the product of the marginal likelihoods for each café:
 
 $$L(\alpha, \beta \mid t_1, t_2, \dots, t_n) = \prod_{i = 1}^n \left[ \int \prod_{j=1}^{v_i} \pi(t_{ij} \mid \lambda_i) \pi(\lambda_i \mid \alpha, \beta) \, d\lambda_i \right]$$
 
@@ -265,12 +265,12 @@ ggplot(compare_df, aes(x = cafe, y = median, colour = model,
   theme_minimal()
 ```
 
-As shown in the plot, the random effects estimates are being pulled towards the posterior median of the mean expected waiting time across cafés, represented by the dashed horizontal line, in comparison to the fixed effects estimates which are further from it, which is most visible at the extremes, such as cafés 8 and 10. This makes sense intuitively, as the random effects model uses shrinkage to share information across all cafés rather than estimating each one completely independently. For most of the cafés, the credibility intervals from the random effects model are narrower and more stable compared to those from the fixed effects model, though there are some exceptions, such as café 10, which shows wider random effects intervals.
+As shown in the plot, the random effects estimates are being pulled towards the posterior median of the mean expected waiting time across cafés, represented by the dashed horizontal line, in comparison to the fixed effects estimates which are further from it, which is most visible at the extremes, such as cafés 8 and 10. This makes sense intuitively, as the random effects model uses shrinkage to share information across all cafés rather than estimating each one completely independently. For most of the cafés, the credibility intervals from the random effects model are narrower and more stable compared to those from the fixed effects model.
 
 ### Question 10
 
-The population parameters $\alpha$ and $\beta$ define the Gamma distribution from which each café's mean waiting time $\lambda_i$ is drawn. Information about $\alpha$ and $\beta$ comes from observing all 15 cafés, since each cafe provides one independent draw from this population distribution. If only one café is visited, we will be able to gain a more precise mean arrival time to that café as the confidence interval becomes narrower, this aligns with the asymptotic theory of normality for the MLE.
+The population parameters $\alpha$ and $\beta$ define the Gamma distribution from which each café's mean waiting time $\lambda_i$ is drawn. Information about $\alpha$ and $\beta$ therefore accumulates through observing many cafés. Each café provides one independent draw from this population distribution.
 
-As we make more visits to Café Statistique ($v_i \to \infty$), we get a more precise estimate of that one café's mean waiting time. But this doesn't increase n — we still only have 15 cafés providing information about the population parameters $\alpha$ and $\beta$. This however does not really affect the standard error of the true polulation parameters. The population parameters rely on all 15 cafés to provide shared information about the expected mean waiting time for coffee, only one has become more precise, the other 14 remain the same.
+As the number of visits to Café Statistique grows ($v \to \infty$), the posterior for that café's $\lambda_i$ becomes increasingly precise, eventually collapsing to a point. However, this does not increase $n$. There are still only 15 cafés providing information about the population parameters $\alpha$ and $\beta$, with 14 of them remaining estimated with uncertainty.
 
-The key insight from Fisher information theory is that information accumulates with the number of independent cafés (n), not the number of visits to one café. Since n = 15 is fixed, the total information is bounded. By the Cramér-Rao lower bound, the standard error has a positive lower bound it cannot go below, no matter how many visits we make to Cafés Statistique. Therefore the SE will decrease slightly to a certain point and will remain at that SE based on the Cramér-Rao lower bound theorem.
+From Fisher information theory, information about $(\alpha, \beta)$ accumulates with the number of independent cafés $n$, not with the number of visits to a single café. Since $n = 15$ is fixed, the total Fisher information is bounded. By the Cramér-Rao lower bound, the standard error of $\mu = \alpha / \beta$ therefore has a positive lower bound it cannot cross, regardless of how many visits are made to Café Statistique. The standard error will decrease initially as $\lambda_{\text{Statistique}}$ becomes more precise, but will plateau at a positive non-zero value.
