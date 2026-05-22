@@ -67,7 +67,7 @@ $$L(\theta) = \prod_{i=1}^{n} \int \pi(t_{i}|\lambda_{i})\pi(\lambda_{i}|\theta)
 
 Since repeated visits can take place , let $t_{ij}$ represent the waiting time for coffee j at cafe i. Therefore the model specifications will be:
 
-$$T_{ij} \mid \lambda_i {\sim}\text{Exponential}(\lambda_i)$$ where: $$ i = 1,2,3,\dots,n \quad \text{&} \quad j = 1,2,3,\dots,v_i$$ $$\lambda_i \overset{\mathrm{iid}}{\sim} \text{Gamma}(\alpha, \beta)$$
+$$T_{ij} \mid \lambda_i {\sim}\text{Exponential}(\lambda_i)$$ where: $$ i = 1,2,3,\dots,n \quad \& \quad j = 1,2,3,\dots,v_i$$ $$\lambda_i \overset{\mathrm{iid}}{\sim} \text{Gamma}(\alpha, \beta)$$
 
 ### Question 4
 
