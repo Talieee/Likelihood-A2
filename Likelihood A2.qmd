@@ -1,6 +1,6 @@
 ---
-title: "Question 3&4"
-author: "Natalie C"
+title: "Assignment 2"
+author: "Donnica Haupt & Natalie Chidikwindi & Yo-Jen Chen"
 format:
   pdf:
     include-in-header: 
@@ -8,22 +8,20 @@ format:
             \usepackage{amsmath}
 execute: 
   echo: false
+  warning: false
+  message: false
 editor: visual
 ---
 
-```{r}
-#loading of libraries
-library(readr)
+```{r setup}
+# loading libraries
 library(tidyverse)
 library(cmdstanr)
-library(ggplot2)
 library(knitr)
 ```
 
-## Loading for dataset
-
-```{r}
-coffeetime <- read_csv("coffeetime.csv")
+```{r dataset}
+coffeetime <- read.csv("coffeetime.csv")
 N <- nrow(coffeetime) # sample size
 n <- n_distinct(coffeetime$cafe) # number of cafes
 t <- coffeetime$time # waiting time
@@ -122,13 +120,13 @@ re_mod <- cmdstan_model(write_stan_file(re_stan_code)) # compile C++ model from 
 
 # sample posterior with MCMC
 re_fit <- re_mod$sample(
-  data = dat, 
-  seed = 123,
-  refresh = 0,
-  chains = 4,
+  data            = dat, 
+  seed            = 123,
+  refresh         = 0,
+  chains          = 4,
   parallel_chains = 4,
-  iter_warmup = 1000,
-  iter_sampling = 2000
+  iter_warmup     = 1000,
+  iter_sampling   = 2000
 )
 ```
 
@@ -149,7 +147,7 @@ cbind(1:4,as.data.frame(re_fit$diagnostic_summary())) |>
   kable(col.names = c("chains","divergences","max treedepth","EBFMI"), digits = 3)
 ```
 
-The diagnostics summary is given in @tbl-diagsum and shows that there was no divergences or maximum tree depths that were hit and the E-BFMI is above 0.3 across all chains.
+The MCMC diagnostics confirmed that there was reliable sampling. The diagnostics summary is given in @tbl-diagsum and shows that there was no divergences or maximum tree depths that were hit and the E-BFMI is above 0.3 across all chains.
 
 ```{r}
 #| label: fig-modhist
@@ -214,6 +212,7 @@ fe_mod <- cmdstan_model(write_stan_file(fe_stan_code))
 fe_fit <- fe_mod$sample(
   data            = dat,
   seed            = 123,
+  refresh         = 0,
   chains          = 4,
   parallel_chains = 4,
   iter_warmup     = 1000,
